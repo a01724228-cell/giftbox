@@ -1,201 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Surprise Reveal</title>
+    <title>Surprise! :)</title>
     <style>
-        /* Matches your UIFigure.Color: [0.5255 0.6784 0.6902] */
-        body { 
-            background-color: #86adb0; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            overflow: hidden;
-            font-family: sans-serif;
-        }
-
-        #title {
-            color: white;
-            font-family: "Curlz MT", "Comic Sans MS", cursive;
-            font-size: 32px;
-            margin-bottom: 10px;
-            height: 40px; /* Space for title when it appears */
-        }
-
-        canvas {
-            background-color: transparent;
-            /* Matches app.UIAxes.Position roughly */
-            max-width: 100%;
-        }
-
-        /* Matches your OPENButton design */
-        #openBtn {
-            background-color: #283d70; /* [0.1569 0.2392 0.4392] */
-            color: #cccccc;           /* [0.8 0.8 0.8] */
-            font-family: "Curlz MT", "Comic Sans MS", cursive;
-            font-size: 48px;
-            padding: 10px 40px;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            margin-top: 20px;
-        }
-
-        #openBtn:hover { background-color: #344e8f; }
+        body { background-color: #86adb0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #title { color: white; font-family: "Curlz MT", cursive; font-size: 38px; margin-bottom: 20px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); height: 45px; }
+        #openBtn { background-color: #2e3e6e; color: #d1d1d1; font-family: "Curlz MT", cursive; font-size: 48px; padding: 15px 45px; border: none; border-radius: 18px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transition: 0.2s; }
+        #openBtn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
-
     <div id="title"></div>
-    <canvas id="appCanvas" width="640" height="350"></canvas>
+    <canvas id="giftCanvas" width="500" height="400"></canvas>
     <button id="openBtn">OPEN :)</button>
 
     <script>
-        const canvas = document.getElementById('appCanvas');
+        const canvas = document.getElementById('giftCanvas');
         const ctx = canvas.getContext('2d');
-        const openBtn = document.getElementById('openBtn');
-        const titleDiv = document.getElementById('title');
-
-        let animationStage = 0; // 0: Idle, 1: Pop/Lid, 2: Reveal
-        let popProgress = 0;
-        let testOpacity = 0;
-        let showText = false;
-        let showFinalText = false;
-
-        // Colors from your code
-        const boxRed = "rgb(204, 25, 25)";
-        const lidRed = "rgb(230, 51, 51)";
-        const ribbonGold = "rgb(255, 204, 0)";
-        const testBlue = "rgb(51, 102, 204)";
+        let stage = 0; // 0: Idle, 1: Opening, 2: Reveal
+        let progress = 0;
 
         function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Perspective adjustment to match view(45, 30)
+            ctx.clearRect(0, 0, 500, 400);
             ctx.save();
-            ctx.translate(canvas.width/2, canvas.height/1.5);
+            ctx.translate(250, 220);
 
-            if (animationStage === 0 || animationStage === 1) {
-                drawBox(popProgress);
+            if (stage < 2) {
+                let flyUp = progress * 250;
+                let fade = 1 - progress;
+                
+                // --- DRAW BOX BODY (3D Perspective) ---
+                // Right Side (Darker)
+                ctx.fillStyle = "#631a1a";
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(80, -40); ctx.lineTo(80, 80); ctx.lineTo(0, 120); ctx.fill();
+                // Left Side (Lighter)
+                ctx.fillStyle = "#8b2a2a";
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-80, -40); ctx.lineTo(-80, 80); ctx.lineTo(0, 120); ctx.fill();
+                // Front Ribbon
+                ctx.fillStyle = "#d4af37";
+                ctx.fillRect(-10, 5, 20, 110);
+
+                // --- DRAW LID (Flying Away) ---
+                ctx.save();
+                ctx.translate(0, -flyUp);
+                ctx.globalAlpha = fade;
+                
+                // Lid Top
+                ctx.fillStyle = "#a33232";
+                ctx.beginPath(); ctx.moveTo(0, -10); ctx.lineTo(90, -55); ctx.lineTo(0, -100); ctx.lineTo(-90, -55); ctx.fill();
+                // Lid Ribbon
+                ctx.fillStyle = "#e6be45";
+                ctx.beginPath(); ctx.moveTo(-10, -15); ctx.lineTo(80, -60); ctx.lineTo(70, -65); ctx.lineTo(-20, -20); ctx.fill();
+                
+                // The Bow Loops
+                ctx.fillStyle = "#d4af37";
+                ctx.beginPath(); ctx.ellipse(-30, -70, 15, 30, Math.PI/4, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(30, -70, 15, 30, -Math.PI/4, 0, Math.PI*2); ctx.fill();
+                ctx.restore();
             }
 
-            if (animationStage === 2) {
-                drawPregnancyTest();
+            if (stage === 2) {
+                drawTestStick();
             }
 
+            if (stage === 1) {
+                progress += 0.02;
+                if (progress >= 1) { stage = 2; }
+            }
             ctx.restore();
             requestAnimationFrame(draw);
         }
 
-        function drawBox(p) {
-            ctx.globalAlpha = 1 - p;
-            let offset = p * 150; // Fly away height
-
-            // Draw Box Base (Simplified 3D for 2D Canvas)
-            ctx.fillStyle = boxRed;
-            // Front face
-            ctx.beginPath();
-            ctx.moveTo(-50, 0); ctx.lineTo(50, 20); ctx.lineTo(50, 100); ctx.lineTo(-50, 80);
-            ctx.fill();
-            // Side face
-            ctx.fillStyle = "#801010";
-            ctx.beginPath();
-            ctx.moveTo(50, 20); ctx.lineTo(100, -10); ctx.lineTo(100, 70); ctx.lineTo(50, 100);
-            ctx.fill();
-
-            // Ribbons (Yellow lines)
-            ctx.strokeStyle = ribbonGold;
-            ctx.lineWidth = 8;
-            ctx.beginPath();
-            ctx.moveTo(0, 10); ctx.lineTo(0, 90); // Vertical
-            ctx.moveTo(0, 10 - offset); ctx.lineTo(50, -20 - offset); // Lid top
-            ctx.stroke();
-
-            // Lid (Flying up)
-            ctx.save();
-            ctx.translate(0, -offset - (p * 50));
-            ctx.fillStyle = lidRed;
-            ctx.beginPath();
-            ctx.moveTo(-60, -10); ctx.lineTo(40, 10); ctx.lineTo(110, -30); ctx.lineTo(10, -50);
-            ctx.fill();
-            
-            // Bow (Loops)
-            ctx.fillStyle = ribbonGold;
-            ctx.beginPath(); // Left Loop
-            ctx.ellipse(-20, -35, 15, 25, Math.PI/4, 0, Math.PI*2);
-            ctx.fill();
-            ctx.beginPath(); // Right Loop
-            ctx.ellipse(30, -25, 15, 25, -Math.PI/4, 0, Math.PI*2);
-            ctx.fill();
-            ctx.restore();
-
-            ctx.globalAlpha = 1;
-        }
-
-        function drawPregnancyTest() {
-            ctx.save();
-            ctx.translate(0, -50);
-            ctx.globalAlpha = testOpacity;
-
+        function drawTestStick() {
             // White Body
             ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.roundRect(-150, -30, 300, 60, [0, 30, 30, 0]);
-            ctx.fill();
-
-            // Blue Lid (Left)
-            ctx.fillStyle = testBlue;
-            ctx.beginPath();
-            ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]);
-            ctx.fill();
-
+            ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
+            // Blue Cap
+            ctx.fillStyle = "#3b73d1";
+            ctx.beginPath(); ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]); ctx.fill();
             // Screen
-            ctx.fillStyle = "#262626";
-            ctx.fillRect(-30, -15, 120, 30);
-
-            // Result Text
-            if (showText) {
-                ctx.fillStyle = showFinalText ? "#66ff66" : "white";
-                ctx.font = showFinalText ? "bold 16px Courier New" : "10px Courier New";
-                ctx.textAlign = "center";
-                ctx.fillText(showFinalText ? "PREGNANT" : "PLEASE WAIT...", 30, 5);
-            }
-
-            ctx.restore();
-            if (testOpacity < 1) testOpacity += 0.05;
-        }
-
-        openBtn.addEventListener('click', () => {
-            animationStage = 1;
-            openBtn.style.display = 'none';
+            ctx.fillStyle = "#1a1a1a";
+            ctx.fillRect(-20, -18, 110, 36);
             
-            // Start the "Pop" animation
-            let interval = setInterval(() => {
-                popProgress += 0.05;
-                if (popProgress >= 1) {
-                    clearInterval(interval);
-                    animationStage = 2;
-                    startTextLogic();
-                }
-            }, 30);
-        });
-
-        function startTextLogic() {
-            setTimeout(() => { 
-                showText = true; // "Please Wait"
-                setTimeout(() => {
-                    showFinalText = true; // "Pregnant"
-                    titleDiv.innerText = "SURPRISE! :)";
-                }, 2000);
-            }, 1500);
+            // Result
+            ctx.fillStyle = "#5f5";
+            ctx.font = "bold 18px Courier New";
+            ctx.textAlign = "center";
+            ctx.fillText("PREGNANT", 35, 7);
         }
 
+        document.getElementById('openBtn').onclick = () => {
+            stage = 1;
+            document.getElementById('openBtn').style.display = 'none';
+            document.getElementById('title').innerText = "SURPRISE! :)";
+        };
         draw();
     </script>
 </body>
 </html>
-
