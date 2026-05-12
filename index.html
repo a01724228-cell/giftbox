@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Surprise Reveal</title>
+    <style>
+        /* Matches your UIFigure.Color: [0.5255 0.6784 0.6902] */
+        body { 
+            background-color: #86adb0; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        #title {
+            color: white;
+            font-family: "Curlz MT", "Comic Sans MS", cursive;
+            font-size: 32px;
+            margin-bottom: 10px;
+            height: 40px; /* Space for title when it appears */
+        }
+
+        canvas {
+            background-color: transparent;
+            /* Matches app.UIAxes.Position roughly */
+            max-width: 100%;
+        }
+
+        /* Matches your OPENButton design */
+        #openBtn {
+            background-color: #283d70; /* [0.1569 0.2392 0.4392] */
+            color: #cccccc;           /* [0.8 0.8 0.8] */
+            font-family: "Curlz MT", "Comic Sans MS", cursive;
+            font-size: 48px;
+            padding: 10px 40px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+
+        #openBtn:hover { background-color: #344e8f; }
+    </style>
+</head>
+<body>
+
+    <div id="title"></div>
+    <canvas id="appCanvas" width="640" height="350"></canvas>
+    <button id="openBtn">OPEN :)</button>
+
+    <script>
+        const canvas = document.getElementById('appCanvas');
+        const ctx = canvas.getContext('2d');
+        const openBtn = document.getElementById('openBtn');
+        const titleDiv = document.getElementById('title');
+
+        let animationStage = 0; // 0: Idle, 1: Pop/Lid, 2: Reveal
+        let popProgress = 0;
+        let testOpacity = 0;
+        let showText = false;
+        let showFinalText = false;
+
+        // Colors from your code
+        const boxRed = "rgb(204, 25, 25)";
+        const lidRed = "rgb(230, 51, 51)";
+        const ribbonGold = "rgb(255, 204, 0)";
+        const testBlue = "rgb(51, 102, 204)";
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Perspective adjustment to match view(45, 30)
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/1.5);
+
+            if (animationStage === 0 || animationStage === 1) {
+                drawBox(popProgress);
+            }
+
+            if (animationStage === 2) {
+                drawPregnancyTest();
+            }
+
+            ctx.restore();
+            requestAnimationFrame(draw);
+        }
+
+        function drawBox(p) {
+            ctx.globalAlpha = 1 - p;
+            let offset = p * 150; // Fly away height
+
+            // Draw Box Base (Simplified 3D for 2D Canvas)
+            ctx.fillStyle = boxRed;
+            // Front face
+            ctx.beginPath();
+            ctx.moveTo(-50, 0); ctx.lineTo(50, 20); ctx.lineTo(50, 100); ctx.lineTo(-50, 80);
+            ctx.fill();
+            // Side face
+            ctx.fillStyle = "#801010";
+            ctx.beginPath();
+            ctx.moveTo(50, 20); ctx.lineTo(100, -10); ctx.lineTo(100, 70); ctx.lineTo(50, 100);
+            ctx.fill();
+
+            // Ribbons (Yellow lines)
+            ctx.strokeStyle = ribbonGold;
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(0, 10); ctx.lineTo(0, 90); // Vertical
+            ctx.moveTo(0, 10 - offset); ctx.lineTo(50, -20 - offset); // Lid top
+            ctx.stroke();
+
+            // Lid (Flying up)
+            ctx.save();
+            ctx.translate(0, -offset - (p * 50));
+            ctx.fillStyle = lidRed;
+            ctx.beginPath();
+            ctx.moveTo(-60, -10); ctx.lineTo(40, 10); ctx.lineTo(110, -30); ctx.lineTo(10, -50);
+            ctx.fill();
+            
+            // Bow (Loops)
+            ctx.fillStyle = ribbonGold;
+            ctx.beginPath(); // Left Loop
+            ctx.ellipse(-20, -35, 15, 25, Math.PI/4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.beginPath(); // Right Loop
+            ctx.ellipse(30, -25, 15, 25, -Math.PI/4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.restore();
+
+            ctx.globalAlpha = 1;
+        }
+
+        function drawPregnancyTest() {
+            ctx.save();
+            ctx.translate(0, -50);
+            ctx.globalAlpha = testOpacity;
+
+            // White Body
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.roundRect(-150, -30, 300, 60, [0, 30, 30, 0]);
+            ctx.fill();
+
+            // Blue Lid (Left)
+            ctx.fillStyle = testBlue;
+            ctx.beginPath();
+            ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]);
+            ctx.fill();
+
+            // Screen
+            ctx.fillStyle = "#262626";
+            ctx.fillRect(-30, -15, 120, 30);
+
+            // Result Text
+            if (showText) {
+                ctx.fillStyle = showFinalText ? "#66ff66" : "white";
+                ctx.font = showFinalText ? "bold 16px Courier New" : "10px Courier New";
+                ctx.textAlign = "center";
+                ctx.fillText(showFinalText ? "PREGNANT" : "PLEASE WAIT...", 30, 5);
+            }
+
+            ctx.restore();
+            if (testOpacity < 1) testOpacity += 0.05;
+        }
+
+        openBtn.addEventListener('click', () => {
+            animationStage = 1;
+            openBtn.style.display = 'none';
+            
+            // Start the "Pop" animation
+            let interval = setInterval(() => {
+                popProgress += 0.05;
+                if (popProgress >= 1) {
+                    clearInterval(interval);
+                    animationStage = 2;
+                    startTextLogic();
+                }
+            }, 30);
+        });
+
+        function startTextLogic() {
+            setTimeout(() => { 
+                showText = true; // "Please Wait"
+                setTimeout(() => {
+                    showFinalText = true; // "Pregnant"
+                    titleDiv.innerText = "SURPRISE! :)";
+                }, 2000);
+            }, 1500);
+        }
+
+        draw();
+    </script>
+</body>
+</html>
+
