@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Surprise! :)</title>
+    <title>A Special Gift</title>
     <style>
         body { background-color: #86adb0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        #title { color: white; font-family: "Curlz MT", cursive; font-size: 38px; margin-bottom: 20px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); height: 45px; }
-        #openBtn { background-color: #2e3e6e; color: #d1d1d1; font-family: "Curlz MT", cursive; font-size: 48px; padding: 15px 45px; border: none; border-radius: 18px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transition: 0.2s; }
-        #openBtn:active { transform: scale(0.95); }
+        #title { color: white; font-family: "Curlz MT", cursive; font-size: 38px; margin-bottom: 20px; height: 45px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        #openBtn { background-color: #2e3e6e; color: #d1d1d1; font-family: "Curlz MT", cursive; font-size: 48px; padding: 15px 45px; border: none; border-radius: 18px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -17,76 +16,71 @@
     <script>
         const canvas = document.getElementById('giftCanvas');
         const ctx = canvas.getContext('2d');
-        let stage = 0; // 0: Idle, 1: Opening, 2: Reveal
-        let progress = 0;
+        let stage = 0; let progress = 0;
 
         function draw() {
             ctx.clearRect(0, 0, 500, 400);
             ctx.save();
-            ctx.translate(250, 220);
+            ctx.translate(250, 200); // Center of the screen
 
             if (stage < 2) {
-                let flyUp = progress * 250;
-                let fade = 1 - progress;
+                let flyUp = progress * 300;
                 
-                // --- DRAW BOX BODY (3D Perspective) ---
-                // Right Side (Darker)
-                ctx.fillStyle = "#631a1a";
-                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(80, -40); ctx.lineTo(80, 80); ctx.lineTo(0, 120); ctx.fill();
-                // Left Side (Lighter)
+                // 1. DRAW BOX BODY
+                // Left Side
                 ctx.fillStyle = "#8b2a2a";
-                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-80, -40); ctx.lineTo(-80, 80); ctx.lineTo(0, 120); ctx.fill();
-                // Front Ribbon
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-90, -45); ctx.lineTo(-90, 75); ctx.lineTo(0, 120); ctx.fill();
+                // Right Side (Darker for depth)
+                ctx.fillStyle = "#631a1a";
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(90, -45); ctx.lineTo(90, 75); ctx.lineTo(0, 120); ctx.fill();
+                
+                // 2. RIBBON ON BODY (Centered)
                 ctx.fillStyle = "#d4af37";
-                ctx.fillRect(-10, 5, 20, 110);
+                ctx.beginPath(); ctx.moveTo(-12, 6); ctx.lineTo(12, 6); ctx.lineTo(12, 114); ctx.lineTo(-12, 114); ctx.fill();
 
-                // --- DRAW LID (Flying Away) ---
+                // 3. DRAW LID (Moves up when clicked)
                 ctx.save();
                 ctx.translate(0, -flyUp);
-                ctx.globalAlpha = fade;
+                ctx.globalAlpha = 1 - progress;
+
+                // Lid Sides
+                ctx.fillStyle = "#7a2424";
+                ctx.beginPath(); ctx.moveTo(-95, -42); ctx.lineTo(0, 5); ctx.lineTo(95, -42); ctx.lineTo(95, -30); ctx.lineTo(0, 17); ctx.lineTo(-95, -30); ctx.fill();
                 
-                // Lid Top
+                // Lid Top (Diamond Shape)
                 ctx.fillStyle = "#a33232";
-                ctx.beginPath(); ctx.moveTo(0, -10); ctx.lineTo(90, -55); ctx.lineTo(0, -100); ctx.lineTo(-90, -55); ctx.fill();
-                // Lid Ribbon
+                ctx.beginPath(); ctx.moveTo(0, -42); ctx.lineTo(95, -90); ctx.lineTo(0, -135); ctx.lineTo(-95, -90); ctx.closePath(); ctx.fill();
+
+                // Gold Ribbon on Top
                 ctx.fillStyle = "#e6be45";
-                ctx.beginPath(); ctx.moveTo(-10, -15); ctx.lineTo(80, -60); ctx.lineTo(70, -65); ctx.lineTo(-20, -20); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-12, -48); ctx.lineTo(83, -95); ctx.lineTo(71, -101); ctx.lineTo(-24, -54); ctx.fill();
                 
-                // The Bow Loops
+                // Bow Loops
                 ctx.fillStyle = "#d4af37";
-                ctx.beginPath(); ctx.ellipse(-30, -70, 15, 30, Math.PI/4, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(30, -70, 15, 30, -Math.PI/4, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(-25, -100, 12, 25, Math.PI/3.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(25, -100, 12, 25, -Math.PI/3.5, 0, Math.PI*2); ctx.fill();
+                
                 ctx.restore();
             }
 
             if (stage === 2) {
-                drawTestStick();
+                // Test Stick
+                ctx.fillStyle = "white";
+                ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
+                ctx.fillStyle = "#3b73d1";
+                ctx.beginPath(); ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]); ctx.fill();
+                ctx.fillStyle = "#1a1a1a";
+                ctx.fillRect(-20, -18, 110, 36);
+                ctx.fillStyle = "#5f5"; ctx.font = "bold 18px Courier New"; ctx.textAlign = "center";
+                ctx.fillText("PREGNANT", 35, 7);
             }
 
             if (stage === 1) {
                 progress += 0.02;
-                if (progress >= 1) { stage = 2; }
+                if (progress >= 1) stage = 2;
             }
             ctx.restore();
             requestAnimationFrame(draw);
-        }
-
-        function drawTestStick() {
-            // White Body
-            ctx.fillStyle = "white";
-            ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
-            // Blue Cap
-            ctx.fillStyle = "#3b73d1";
-            ctx.beginPath(); ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]); ctx.fill();
-            // Screen
-            ctx.fillStyle = "#1a1a1a";
-            ctx.fillRect(-20, -18, 110, 36);
-            
-            // Result
-            ctx.fillStyle = "#5f5";
-            ctx.font = "bold 18px Courier New";
-            ctx.textAlign = "center";
-            ctx.fillText("PREGNANT", 35, 7);
         }
 
         document.getElementById('openBtn').onclick = () => {
