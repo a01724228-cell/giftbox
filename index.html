@@ -27,63 +27,56 @@
                 let flyUp = progress * 450;
                 let fade = 1 - progress;
 
-                // 1. DRAW BOX BODY
-                // Left Wall
-                ctx.fillStyle = "#8b2a2a";
+                // 1. BOX BODY
+                ctx.fillStyle = "#8b2a2a"; // Left
                 ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-100, -50); ctx.lineTo(-100, 100); ctx.lineTo(0, 150); ctx.fill();
-                // Right Wall (Shaded)
-                ctx.fillStyle = "#6e1f1f";
+                ctx.fillStyle = "#6e1f1f"; // Right
                 ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(100, -50); ctx.lineTo(100, 100); ctx.lineTo(0, 150); ctx.fill();
 
-                // 2. RIBBONS ON SIDES (Aligned with lid cross)
+                // 2. BODY RIBBONS
                 ctx.fillStyle = "#d4af37";
-                // Left side vertical
                 ctx.beginPath(); ctx.moveTo(-45, -22); ctx.lineTo(-55, -27); ctx.lineTo(-55, 123); ctx.lineTo(-45, 128); ctx.fill();
-                // Right side vertical
                 ctx.beginPath(); ctx.moveTo(45, -22); ctx.lineTo(55, -27); ctx.lineTo(55, 123); ctx.lineTo(45, 128); ctx.fill();
 
-                // 3. DRAW LID AND BOW (Grouped to fly up)
+                // 3. LID (Moves as one unit)
                 ctx.save();
                 ctx.translate(0, -flyUp);
                 ctx.globalAlpha = fade;
 
-                // Lid Lip/Side (Gives it thickness so it covers the box top)
+                // Lid Sides (Moved UP to close the gap)
                 ctx.fillStyle = "#7a2424";
-                ctx.beginPath(); ctx.moveTo(-105, -48); ctx.lineTo(0, 5); ctx.lineTo(105, -48); ctx.lineTo(105, -35); ctx.lineTo(0, 18); ctx.lineTo(-105, -35); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-105, -53); ctx.lineTo(0, 0); ctx.lineTo(105, -53); ctx.lineTo(105, -40); ctx.lineTo(0, 13); ctx.lineTo(-105, -40); ctx.fill();
 
-                // Lid Top (Diamond)
+                // Lid Top
                 ctx.fillStyle = "#a33232";
-                ctx.beginPath(); ctx.moveTo(0, -5); ctx.lineTo(105, -58); ctx.lineTo(0, -111); ctx.lineTo(-105, -58); ctx.closePath(); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0, -10); ctx.lineTo(105, -63); ctx.lineTo(0, -116); ctx.lineTo(-105, -63); ctx.closePath(); ctx.fill();
                 
-                // LID CROSS RIBBON (Perfectly Aligned)
+                // Lid Cross Ribbon
                 ctx.fillStyle = "#e6be45";
-                // Ribbon Front-Left to Back-Right
-                ctx.beginPath(); ctx.moveTo(-55, -32); ctx.lineTo(-45, -27); ctx.lineTo(50, -84); ctx.lineTo(40, -89); ctx.fill();
-                // Ribbon Front-Right to Back-Left
-                ctx.beginPath(); ctx.moveTo(55, -32); ctx.lineTo(45, -27); ctx.lineTo(-50, -84); ctx.lineTo(-40, -89); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-55, -38); ctx.lineTo(-45, -33); ctx.lineTo(50, -90); ctx.lineTo(40, -95); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(55, -38); ctx.lineTo(45, -33); ctx.lineTo(-50, -90); ctx.lineTo(-40, -95); ctx.fill();
 
-                // BOW ASSEMBLY (On top of lid)
-                ctx.translate(0, -58); 
+                // BOW ASSEMBLY
+                ctx.translate(0, -63); 
                 
-                // Diagonal Tails
+                // Diagonal Tails (Drawn BEFORE loops so they are on the bottom)
+                ctx.fillStyle = "#c5a02c";
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-35, 25); ctx.lineTo(-25, 30); ctx.lineTo(0,5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(35, 25); ctx.lineTo(25, 30); ctx.lineTo(0,5); ctx.fill();
+
+                // Bow Ovals (Nicely shaped)
                 ctx.fillStyle = "#d4af37";
-                ctx.save();
-                ctx.rotate(Math.PI / 4); ctx.fillRect(-40, -3, 80, 6);
-                ctx.rotate(Math.PI / 2); ctx.fillRect(-40, -3, 80, 6);
-                ctx.restore();
+                ctx.beginPath(); ctx.ellipse(-28, -5, 15, 28, Math.PI/3.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(28, -5, 15, 28, -Math.PI/3.5, 0, Math.PI*2); ctx.fill();
 
-                // Bow Ovals
-                ctx.beginPath(); ctx.ellipse(-22, 0, 10, 22, Math.PI/3.5, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(22, 0, 10, 22, -Math.PI/3.5, 0, Math.PI*2); ctx.fill();
-
-                // The Knot (Circle)
-                ctx.beginPath(); ctx.arc(0, 0, 9, 0, Math.PI * 2); ctx.fill();
+                // The Knot (Top layer)
+                ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill();
 
                 ctx.restore();
             }
 
             if (stage === 2) {
-                // The Reveal Stick
+                // Reveal (Stick)
                 ctx.fillStyle = "white";
                 ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
                 ctx.fillStyle = "#3b73d1";
