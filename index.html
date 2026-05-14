@@ -29,9 +29,9 @@
                 let fade = 1 - progress;
 
                 // 1. BOX BODY
-                ctx.fillStyle = "#8b2a2a"; // Left Face
+                ctx.fillStyle = "#8b2a2a"; // Left
                 ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-100, -50); ctx.lineTo(-100, 100); ctx.lineTo(0, 150); ctx.fill();
-                ctx.fillStyle = "#6e1f1f"; // Right Face
+                ctx.fillStyle = "#6e1f1f"; // Right
                 ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(100, -50); ctx.lineTo(100, 100); ctx.lineTo(0, 150); ctx.fill();
 
                 // 2. BODY RIBBONS
@@ -39,42 +39,44 @@
                 ctx.beginPath(); ctx.moveTo(-45, -22); ctx.lineTo(-55, -27); ctx.lineTo(-55, 123); ctx.lineTo(-45, 128); ctx.fill();
                 ctx.beginPath(); ctx.moveTo(45, -22); ctx.lineTo(55, -27); ctx.lineTo(55, 123); ctx.lineTo(45, 128); ctx.fill();
 
-                // 3. LID ASSEMBLY (Capping the box)
+                // 3. LID ASSEMBLY
                 ctx.save();
                 ctx.translate(0, -flyUp);
                 ctx.globalAlpha = fade;
 
-                // Lid Lip (This covers the gap)
+                // Lid Lip (Capping the box perfectly)
                 ctx.fillStyle = "#7a2424";
                 ctx.beginPath(); 
-                ctx.moveTo(-110, -55); ctx.lineTo(0, 0); ctx.lineTo(110, -55); 
-                ctx.lineTo(110, -35); ctx.lineTo(0, 20); ctx.lineTo(-110, -35); 
+                ctx.moveTo(-110, -58); ctx.lineTo(0, -3); ctx.lineTo(110, -58); 
+                ctx.lineTo(110, -38); ctx.lineTo(0, 17); ctx.lineTo(-110, -38); 
                 ctx.closePath(); ctx.fill();
 
                 // Lid Top
                 ctx.fillStyle = "#a33232";
-                ctx.beginPath(); ctx.moveTo(0, -5); ctx.lineTo(110, -60); ctx.lineTo(0, -115); ctx.lineTo(-110, -60); ctx.closePath(); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0, -8); ctx.lineTo(110, -63); ctx.lineTo(0, -118); ctx.lineTo(-110, -63); ctx.closePath(); ctx.fill();
                 
                 // Lid Cross Ribbons
                 ctx.fillStyle = "#e6be45";
-                ctx.beginPath(); ctx.moveTo(-55, -33); ctx.lineTo(-45, -28); ctx.lineTo(55, -83); ctx.lineTo(45, -88); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(55, -33); ctx.lineTo(45, -28); ctx.lineTo(-55, -83); ctx.lineTo(-45, -88); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-55, -36); ctx.lineTo(-45, -31); ctx.lineTo(55, -86); ctx.lineTo(45, -91); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(55, -36); ctx.lineTo(45, -31); ctx.lineTo(-55, -86); ctx.lineTo(-45, -91); ctx.fill();
 
-                // 4. THE BOW (Fixed proportions)
-                ctx.translate(0, -60); 
+                // 4. THE BOW (Redesigned Rotation)
+                ctx.translate(0, -63); 
 
                 // Bottom Layer: Diagonal Tails
                 ctx.fillStyle = "#c5a02c";
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-40, 35); ctx.lineTo(-25, 40); ctx.lineTo(10,5); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(40, 35); ctx.lineTo(25, 40); ctx.lineTo(-10,5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-35, 30); ctx.lineTo(-20, 35); ctx.lineTo(5,5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(35, 30); ctx.lineTo(20, 35); ctx.lineTo(-5,5); ctx.fill();
 
-                // Middle Layer: Fuller Ovals
+                // Middle Layer: Angled Bow Loops (The "Fixed" Ovals)
                 ctx.fillStyle = "#d4af37";
-                ctx.beginPath(); ctx.ellipse(-30, -5, 18, 32, Math.PI/3.2, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(30, -5, 18, 32, -Math.PI/3.2, 0, Math.PI*2); ctx.fill();
+                // Left loop angled inward
+                ctx.beginPath(); ctx.ellipse(-22, -8, 16, 30, Math.PI/1.8, 0, Math.PI*2); ctx.fill();
+                // Right loop angled inward
+                ctx.beginPath(); ctx.ellipse(22, -8, 16, 30, -Math.PI/1.8, 0, Math.PI*2); ctx.fill();
 
                 // Top Layer: The Knot
-                ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI * 2); ctx.fill();
 
                 ctx.restore();
             }
