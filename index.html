@@ -29,9 +29,9 @@
                 let fade = 1 - progress;
 
                 // 1. BOX BODY
-                ctx.fillStyle = "#8b2a2a"; // Left Face
+                ctx.fillStyle = "#8b2a2a"; // Left
                 ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-100, -50); ctx.lineTo(-100, 100); ctx.lineTo(0, 150); ctx.fill();
-                ctx.fillStyle = "#6e1f1f"; // Right Face
+                ctx.fillStyle = "#6e1f1f"; // Right
                 ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(100, -50); ctx.lineTo(100, 100); ctx.lineTo(0, 150); ctx.fill();
 
                 // 2. BODY RIBBONS
@@ -44,47 +44,47 @@
                 ctx.translate(0, -flyUp);
                 ctx.globalAlpha = fade;
 
-                // Lid Lip (Tucked down to cap the box)
+                // LID LIP (LOWERED MANUALLY TO LOCK)
                 ctx.fillStyle = "#7a2424";
                 ctx.beginPath(); 
-                ctx.moveTo(-110, -60); ctx.lineTo(0, -5); ctx.lineTo(110, -60); 
-                ctx.lineTo(110, -35); ctx.lineTo(0, 20); ctx.lineTo(-110, -35); 
+                ctx.moveTo(-105, -45); ctx.lineTo(0, 8); ctx.lineTo(105, -45); 
+                ctx.lineTo(105, -25); ctx.lineTo(0, 28); ctx.lineTo(-105, -25); 
                 ctx.closePath(); ctx.fill();
 
-                // Lid Top
+                // LID TOP
                 ctx.fillStyle = "#a33232";
-                ctx.beginPath(); ctx.moveTo(0, -10); ctx.lineTo(110, -65); ctx.lineTo(0, -120); ctx.lineTo(-110, -65); ctx.closePath(); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0, 8); ctx.lineTo(105, -45); ctx.lineTo(0, -98); ctx.lineTo(-105, -45); ctx.closePath(); ctx.fill();
                 
-                // Lid Cross Ribbons
+                // LID CROSS RIBBONS
                 ctx.fillStyle = "#e6be45";
-                ctx.beginPath(); ctx.moveTo(-55, -38); ctx.lineTo(-45, -33); ctx.lineTo(55, -88); ctx.lineTo(45, -93); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(55, -38); ctx.lineTo(45, -33); ctx.lineTo(-55, -88); ctx.lineTo(-45, -93); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-52, -18); ctx.lineTo(-42, -13); ctx.lineTo(52, -72); ctx.lineTo(42, -77); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(52, -18); ctx.lineTo(42, -13); ctx.lineTo(-52, -72); ctx.lineTo(-42, -77); ctx.fill();
 
-                // 4. THE BOW (Redesigned with Curves)
-                ctx.translate(0, -65); 
+                // 4. THE BOW (Redesigned Loops)
+                ctx.translate(0, -45); 
 
                 // Bottom Layer: Diagonal Tails
                 ctx.fillStyle = "#c5a02c";
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-45, 35); ctx.lineTo(-30, 40); ctx.lineTo(0,5); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(45, 35); ctx.lineTo(30, 40); ctx.lineTo(0,5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-45, 40); ctx.lineTo(-30, 45); ctx.lineTo(0,5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(45, 40); ctx.lineTo(30, 45); ctx.lineTo(0,5); ctx.fill();
 
-                // Middle Layer: Loop Shapes
+                // Middle Layer: Rounded Bow Loops
                 ctx.fillStyle = "#d4af37";
                 
-                // Left Loop
+                // Left Loop (Pinch at center, flare out)
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(-50, -50, -60, 20, 0, 0);
+                ctx.bezierCurveTo(-30, -40, -70, -10, 0, 0);
                 ctx.fill();
                 
-                // Right Loop
+                // Right Loop (Pinch at center, flare out)
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(50, -50, 60, 20, 0, 0);
+                ctx.bezierCurveTo(30, -40, 70, -10, 0, 0);
                 ctx.fill();
 
-                // Top Layer: The Knot
-                ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill();
+                // Top Layer: Knot
+                ctx.beginPath(); ctx.arc(0, 0, 11, 0, Math.PI * 2); ctx.fill();
 
                 ctx.restore();
             }
