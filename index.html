@@ -5,7 +5,8 @@
     <style>
         body { background-color: #86adb0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
         #title { color: white; font-family: "Curlz MT", cursive; font-size: 38px; margin-bottom: 20px; height: 45px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        #openBtn { background-color: #2e3e6e; color: #d1d1d1; font-family: "Curlz MT", cursive; font-size: 48px; padding: 15px 45px; border: none; border-radius: 18px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
+        #openBtn { background-color: #2e3e6e; color: #d1d1d1; font-family: "Curlz MT", cursive; font-size: 48px; padding: 15px 45px; border: none; border-radius: 18px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transition: 0.2s; }
+        #openBtn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -28,9 +29,9 @@
                 let fade = 1 - progress;
 
                 // 1. BOX BODY
-                ctx.fillStyle = "#8b2a2a"; // Left
+                ctx.fillStyle = "#8b2a2a"; // Left Face
                 ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-100, -50); ctx.lineTo(-100, 100); ctx.lineTo(0, 150); ctx.fill();
-                ctx.fillStyle = "#6e1f1f"; // Right
+                ctx.fillStyle = "#6e1f1f"; // Right Face
                 ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(100, -50); ctx.lineTo(100, 100); ctx.lineTo(0, 150); ctx.fill();
 
                 // 2. BODY RIBBONS
@@ -38,45 +39,48 @@
                 ctx.beginPath(); ctx.moveTo(-45, -22); ctx.lineTo(-55, -27); ctx.lineTo(-55, 123); ctx.lineTo(-45, 128); ctx.fill();
                 ctx.beginPath(); ctx.moveTo(45, -22); ctx.lineTo(55, -27); ctx.lineTo(55, 123); ctx.lineTo(45, 128); ctx.fill();
 
-                // 3. LID (Moves as one unit)
+                // 3. LID ASSEMBLY (Capping the box)
                 ctx.save();
                 ctx.translate(0, -flyUp);
                 ctx.globalAlpha = fade;
 
-                // Lid Sides (Moved UP to close the gap)
+                // Lid Lip (This covers the gap)
                 ctx.fillStyle = "#7a2424";
-                ctx.beginPath(); ctx.moveTo(-105, -53); ctx.lineTo(0, 0); ctx.lineTo(105, -53); ctx.lineTo(105, -40); ctx.lineTo(0, 13); ctx.lineTo(-105, -40); ctx.fill();
+                ctx.beginPath(); 
+                ctx.moveTo(-110, -55); ctx.lineTo(0, 0); ctx.lineTo(110, -55); 
+                ctx.lineTo(110, -35); ctx.lineTo(0, 20); ctx.lineTo(-110, -35); 
+                ctx.closePath(); ctx.fill();
 
                 // Lid Top
                 ctx.fillStyle = "#a33232";
-                ctx.beginPath(); ctx.moveTo(0, -10); ctx.lineTo(105, -63); ctx.lineTo(0, -116); ctx.lineTo(-105, -63); ctx.closePath(); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0, -5); ctx.lineTo(110, -60); ctx.lineTo(0, -115); ctx.lineTo(-110, -60); ctx.closePath(); ctx.fill();
                 
-                // Lid Cross Ribbon
+                // Lid Cross Ribbons
                 ctx.fillStyle = "#e6be45";
-                ctx.beginPath(); ctx.moveTo(-55, -38); ctx.lineTo(-45, -33); ctx.lineTo(50, -90); ctx.lineTo(40, -95); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(55, -38); ctx.lineTo(45, -33); ctx.lineTo(-50, -90); ctx.lineTo(-40, -95); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-55, -33); ctx.lineTo(-45, -28); ctx.lineTo(55, -83); ctx.lineTo(45, -88); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(55, -33); ctx.lineTo(45, -28); ctx.lineTo(-55, -83); ctx.lineTo(-45, -88); ctx.fill();
 
-                // BOW ASSEMBLY
-                ctx.translate(0, -63); 
-                
-                // Diagonal Tails (Drawn BEFORE loops so they are on the bottom)
+                // 4. THE BOW (Fixed proportions)
+                ctx.translate(0, -60); 
+
+                // Bottom Layer: Diagonal Tails
                 ctx.fillStyle = "#c5a02c";
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-35, 25); ctx.lineTo(-25, 30); ctx.lineTo(0,5); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(35, 25); ctx.lineTo(25, 30); ctx.lineTo(0,5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-40, 35); ctx.lineTo(-25, 40); ctx.lineTo(10,5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(40, 35); ctx.lineTo(25, 40); ctx.lineTo(-10,5); ctx.fill();
 
-                // Bow Ovals (Nicely shaped)
+                // Middle Layer: Fuller Ovals
                 ctx.fillStyle = "#d4af37";
-                ctx.beginPath(); ctx.ellipse(-28, -5, 15, 28, Math.PI/3.5, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(28, -5, 15, 28, -Math.PI/3.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(-30, -5, 18, 32, Math.PI/3.2, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(30, -5, 18, 32, -Math.PI/3.2, 0, Math.PI*2); ctx.fill();
 
-                // The Knot (Top layer)
-                ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill();
+                // Top Layer: The Knot
+                ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill();
 
                 ctx.restore();
             }
 
             if (stage === 2) {
-                // Reveal (Stick)
+                // THE REVEAL
                 ctx.fillStyle = "white";
                 ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
                 ctx.fillStyle = "#3b73d1";
@@ -87,7 +91,7 @@
             }
 
             if (stage === 1) {
-                progress += 0.025;
+                progress += 0.02;
                 if (progress >= 1) stage = 2;
             }
             ctx.restore();
