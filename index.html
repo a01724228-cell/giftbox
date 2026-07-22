@@ -7,17 +7,30 @@
         #title { color: white; font-family: "Curlz MT", cursive; font-size: 38px; margin-bottom: 20px; height: 45px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
         #openBtn { background-color: #2e3e6e; color: #d1d1d1; font-family: "Curlz MT", cursive; font-size: 48px; padding: 15px 45px; border: none; border-radius: 18px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transition: 0.2s; }
         #openBtn:active { transform: scale(0.95); }
+        
+        /* Smooth fade-in style for your real photograph */
+        #realTestPic {
+            display: none;
+            max-width: 90%;
+            max-height: 350px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
     </style>
 </head>
 <body>
     <div id="title"></div>
     <canvas id="giftCanvas" width="500" height="500"></canvas>
+    <img id="realTestPic" src="test.jpg" alt="The Surprise!">
     <button id="openBtn">OPEN :)</button>
 
     <script>
         const canvas = document.getElementById('giftCanvas');
         const ctx = canvas.getContext('2d');
         let stage = 0; let progress = 0;
+        let loadingTimer = 0;
 
         function draw() {
             ctx.clearRect(0, 0, 500, 500);
@@ -44,7 +57,7 @@
                 ctx.translate(0, -flyUp);
                 ctx.globalAlpha = fade;
 
-                // LID LIP (LOWERED MANUALLY TO LOCK)
+                // LID LIP
                 ctx.fillStyle = "#7a2424";
                 ctx.beginPath(); 
                 ctx.moveTo(-105, -45); ctx.lineTo(0, 8); ctx.lineTo(105, -45); 
@@ -60,7 +73,7 @@
                 ctx.beginPath(); ctx.moveTo(-52, -18); ctx.lineTo(-42, -13); ctx.lineTo(52, -72); ctx.lineTo(42, -77); ctx.fill();
                 ctx.beginPath(); ctx.moveTo(52, -18); ctx.lineTo(42, -13); ctx.lineTo(-52, -72); ctx.lineTo(-42, -77); ctx.fill();
 
-                // 4. THE BOW (Redesigned Loops)
+                // 4. THE BOW (Thick Wings Version)
                 ctx.translate(0, -45); 
 
                 // Bottom Layer: Diagonal Tails
@@ -68,16 +81,16 @@
                 ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-55, 50); ctx.lineTo(-35, 55); ctx.lineTo(0,5); ctx.fill();
                 ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(55, 50); ctx.lineTo(35, 55); ctx.lineTo(0,5); ctx.fill();
 
-                // Middle Layer: Rounded Bow Loops (Thickened Wings)
+                // Middle Layer: Rounded Bow Loops
                 ctx.fillStyle = "#d4af37";
                 
-                // Left Loop (Puffed out significantly wider)
+                // Left Loop
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
                 ctx.bezierCurveTo(-85, -80, -95, 20, 0, 0);
                 ctx.fill();
                 
-                // Right Loop (Puffed out significantly wider)
+                // Right Loop
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
                 ctx.bezierCurveTo(85, -80, 95, 20, 0, 0);
@@ -89,23 +102,46 @@
                 ctx.restore();
             }
 
-            if (stage === 2) {
-                // THE REVEAL
-                ctx.fillStyle = "white";
-                ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
-                ctx.fillStyle = "#3b73d1";
-                ctx.beginPath(); ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]); ctx.fill();
-                ctx.fillStyle = "#1a1a1a"; ctx.fillRect(-20, -18, 110, 36);
-                ctx.fillStyle = "#5f5"; ctx.font = "bold 18px Courier New"; ctx.textAlign = "center";
-                ctx.fillText("PREGNANT", 35, 7);
-            }
-
+            // STAGE 1: LID IS FLYING OFF / PROCESSING
             if (stage === 1) {
                 progress += 0.02;
-                if (progress >= 1) stage = 2;
+                if (progress >= 1) {
+                    progress = 1;
+                    
+                    // Draw the blank Clearblue digital screen shell
+                    ctx.fillStyle = "white";
+                    ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
+                    ctx.fillStyle = "#3b73d1";
+                    ctx.beginPath(); ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]); ctx.fill();
+                    ctx.fillStyle = "#c2c7b5"; ctx.fillRect(-20, -18, 110, 36); // Classic grey-green LCD background
+                    
+                    // Animate a blinking hourglass symbol
+                    loadingTimer++;
+                    if (Math.floor(loadingTimer / 20) % 2 === 0) {
+                        ctx.fillStyle = "#2b3021";
+                        ctx.font = "20px Courier New";
+                        ctx.textAlign = "center";
+                        ctx.fillText("⏳", 35, 8);
+                    }
+
+                    // After about 3 seconds (180 frames), switch to the final real photo reveal!
+                    if (loadingTimer > 180) {
+                        stage = 2;
+                        canvas.style.display = 'none'; // Hide the canvas drawing completely
+                        
+                        const realPic = document.getElementById('realTestPic');
+                        realPic.style.display = 'block'; // Show the image element
+                        setTimeout(() => {
+                            realPic.style.opacity = '1'; // Fade it in beautifully
+                        }, 50);
+                    }
+                }
             }
+            
             ctx.restore();
-            requestAnimationFrame(draw);
+            if (stage < 2) {
+                requestAnimationFrame(draw);
+            }
         }
 
         document.getElementById('openBtn').onclick = () => {
