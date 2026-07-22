@@ -63,27 +63,27 @@
                 // 4. THE BOW (Redesigned Loops)
                 ctx.translate(0, -45); 
 
-                // Bottom Layer: Diagonal Tails (Made slightly wider/longer)
+                // Bottom Layer: Diagonal Tails
                 ctx.fillStyle = "#c5a02c";
                 ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-55, 50); ctx.lineTo(-35, 55); ctx.lineTo(0,5); ctx.fill();
                 ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(55, 50); ctx.lineTo(35, 55); ctx.lineTo(0,5); ctx.fill();
 
-                // Middle Layer: Rounded Bow Loops (Adjusted curves to look fluffier and fuller)
+                // Middle Layer: Rounded Bow Loops (Thickened Wings)
                 ctx.fillStyle = "#d4af37";
                 
-                // Left Loop
+                // Left Loop (Puffed out significantly wider)
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(-50, -65, -95, -15, 0, 0);
+                ctx.bezierCurveTo(-85, -80, -95, 20, 0, 0);
                 ctx.fill();
                 
-                // Right Loop
+                // Right Loop (Puffed out significantly wider)
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(50, -65, 95, -15, 0, 0);
+                ctx.bezierCurveTo(85, -80, 95, 20, 0, 0);
                 ctx.fill();
 
-                // Top Layer: Knot (Scaled up slightly to hold the bigger bow)
+                // Top Layer: Knot
                 ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill();
 
                 ctx.restore();
