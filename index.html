@@ -23,10 +23,7 @@
 <body>
     <div id="title"></div>
     <canvas id="giftCanvas" width="500" height="500"></canvas>
-    
-    <!-- Change 'test.jpg' here if your file on GitHub has a different name! -->
     <img id="realTestPic" src="test.jpg" alt="The Surprise!">
-    
     <button id="openBtn">OPEN :)</button>
 
     <script>
@@ -40,8 +37,7 @@
             ctx.save();
             ctx.translate(250, 250); 
 
-            // STAGE 0: The closed gift box before clicking
-            if (stage === 0) {
+            if (stage < 2) {
                 let flyUp = progress * 450;
                 let fade = 1 - progress;
 
@@ -106,34 +102,39 @@
                 ctx.restore();
             }
 
-            // STAGE 1: BOX IS HIDDEN, ONLY THE DIGITAL CLEARBLUE STICK LOADS
+            // STAGE 1: LID IS FLYING OFF / PROCESSING
             if (stage === 1) {
-                // Draw the blank Clearblue digital screen shell perfectly in the center
-                ctx.fillStyle = "white";
-                ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
-                ctx.fillStyle = "#3b73d1";
-                ctx.beginPath(); ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]); ctx.fill();
-                ctx.fillStyle = "#c2c7b5"; ctx.fillRect(-20, -18, 110, 36); // Classic grey-green LCD background
-                
-                // Animate a blinking hourglass symbol
-                loadingTimer++;
-                if (Math.floor(loadingTimer / 20) % 2 === 0) {
-                    ctx.fillStyle = "#2b3021";
-                    ctx.font = "20px Courier New";
-                    ctx.textAlign = "center";
-                    ctx.fillText("⏳", 35, 8);
-                }
-
-                // After 3 seconds (180 frames), clear out the canvas entirely and load the image file
-                if (loadingTimer > 180) {
-                    stage = 2;
-                    canvas.style.display = 'none'; // Clear out the canvas box area entirely
+                progress += 0.02;
+                if (progress >= 1) {
+                    progress = 1;
                     
-                    const realPic = document.getElementById('realTestPic');
-                    realPic.style.display = 'block'; // Make the photo visible
-                    setTimeout(() => {
-                        realPic.style.opacity = '1'; // Trigger beautiful smooth fade-in
-                    }, 50);
+                    // Draw the blank Clearblue digital screen shell
+                    ctx.fillStyle = "white";
+                    ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
+                    ctx.fillStyle = "#3b73d1";
+                    ctx.beginPath(); ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]); ctx.fill();
+                    ctx.fillStyle = "#c2c7b5"; ctx.fillRect(-20, -18, 110, 36); // Classic grey-green LCD background
+                    
+                    // Animate a blinking hourglass symbol
+                    loadingTimer++;
+                    if (Math.floor(loadingTimer / 20) % 2 === 0) {
+                        ctx.fillStyle = "#2b3021";
+                        ctx.font = "20px Courier New";
+                        ctx.textAlign = "center";
+                        ctx.fillText("⏳", 35, 8);
+                    }
+
+                    // After about 3 seconds (180 frames), switch to the final real photo reveal!
+                    if (loadingTimer > 180) {
+                        stage = 2;
+                        canvas.style.display = 'none'; // Hide the canvas drawing completely
+                        
+                        const realPic = document.getElementById('realTestPic');
+                        realPic.style.display = 'block'; // Show the image element
+                        setTimeout(() => {
+                            realPic.style.opacity = '1'; // Fade it in beautifully
+                        }, 50);
+                    }
                 }
             }
             
@@ -144,7 +145,7 @@
         }
 
         document.getElementById('openBtn').onclick = () => {
-            stage = 1; // Jump instantly to the loading sequence, stripping away the gift box layout
+            stage = 1;
             document.getElementById('openBtn').style.display = 'none';
             document.getElementById('title').innerText = "SURPRISE! :)";
         };
