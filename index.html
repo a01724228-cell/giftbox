@@ -23,7 +23,10 @@
 <body>
     <div id="title"></div>
     <canvas id="giftCanvas" width="500" height="500"></canvas>
+    
+    <!-- Change 'test.jpg' here if your file on GitHub has a different name! -->
     <img id="realTestPic" src="test.jpg" alt="The Surprise!">
+    
     <button id="openBtn">OPEN :)</button>
 
     <script>
@@ -37,7 +40,8 @@
             ctx.save();
             ctx.translate(250, 250); 
 
-            if (stage < 2) {
+            // STAGE 0 or 1: Draw the gift box while closed or while the lid is actively flying up
+            if (stage === 0 || (stage === 1 && progress < 1)) {
                 let flyUp = progress * 450;
                 let fade = 1 - progress;
 
@@ -73,7 +77,7 @@
                 ctx.beginPath(); ctx.moveTo(-52, -18); ctx.lineTo(-42, -13); ctx.lineTo(52, -72); ctx.lineTo(42, -77); ctx.fill();
                 ctx.beginPath(); ctx.moveTo(52, -18); ctx.lineTo(42, -13); ctx.lineTo(-52, -72); ctx.lineTo(-42, -77); ctx.fill();
 
-                // 4. THE BOW (Thick Wings Version)
+                // 4. THE BOW
                 ctx.translate(0, -45); 
 
                 // Bottom Layer: Diagonal Tails
@@ -102,20 +106,19 @@
                 ctx.restore();
             }
 
-            // STAGE 1: LID IS FLYING OFF / PROCESSING
+            // STAGE 1: Lid animation handles its timing, then transitions to loading
             if (stage === 1) {
-                progress += 0.02;
-                if (progress >= 1) {
-                    progress = 1;
-                    
-                    // Draw the blank Clearblue digital screen shell
+                if (progress < 1) {
+                    progress += 0.02; // Lift the lid
+                } else {
+                    // Box is completely open and gone! Now draw ONLY the loading digital stick
                     ctx.fillStyle = "white";
                     ctx.beginPath(); ctx.roundRect(-140, -30, 280, 60, [0, 30, 30, 0]); ctx.fill();
                     ctx.fillStyle = "#3b73d1";
                     ctx.beginPath(); ctx.roundRect(-180, -30, 80, 60, [30, 0, 0, 30]); ctx.fill();
-                    ctx.fillStyle = "#c2c7b5"; ctx.fillRect(-20, -18, 110, 36); // Classic grey-green LCD background
+                    ctx.fillStyle = "#c2c7b5"; ctx.fillRect(-20, -18, 110, 36); 
                     
-                    // Animate a blinking hourglass symbol
+                    // Blinking hourglass
                     loadingTimer++;
                     if (Math.floor(loadingTimer / 20) % 2 === 0) {
                         ctx.fillStyle = "#2b3021";
@@ -124,15 +127,18 @@
                         ctx.fillText("⏳", 35, 8);
                     }
 
-                    // After about 3 seconds (180 frames), switch to the final real photo reveal!
+                    // After loading suspense ends, trigger the final reveal
                     if (loadingTimer > 180) {
                         stage = 2;
-                        canvas.style.display = 'none'; // Hide the canvas drawing completely
+                        canvas.style.display = 'none'; // Erase the canvas entirely
+                        
+                        // Set the surprise title ONLY now!
+                        document.getElementById('title').innerText = "SURPRISE! :)";
                         
                         const realPic = document.getElementById('realTestPic');
-                        realPic.style.display = 'block'; // Show the image element
+                        realPic.style.display = 'block';
                         setTimeout(() => {
-                            realPic.style.opacity = '1'; // Fade it in beautifully
+                            realPic.style.opacity = '1';
                         }, 50);
                     }
                 }
@@ -145,9 +151,9 @@
         }
 
         document.getElementById('openBtn').onclick = () => {
-            stage = 1;
+            stage = 1; // Starts the lid lifting process
             document.getElementById('openBtn').style.display = 'none';
-            document.getElementById('title').innerText = "SURPRISE! :)";
+            document.getElementById('title').innerText = ""; // Keeps the title blank during opening/loading
         };
         draw();
     </script>
